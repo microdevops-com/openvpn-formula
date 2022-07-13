@@ -1,0 +1,106 @@
+client
+dev {{ pillar['openvpn']['clients_base_config']['dev'] }}
+{%- if pillar['openvpn']['clients_base_config']['tun_mtu'] is defined %}
+tun-mtu {{ pillar['openvpn']['clients_base_config']['tun_mtu'] }}
+{%- endif %}
+{%- if pillar['openvpn']['clients_base_config']['link_mtu'] is defined %}
+link-mtu {{ pillar['openvpn']['clients_base_config']['link_mtu'] }}
+{%- endif %}
+
+
+{%- for server, server_params in pillar["openvpn"]["server"].items() %}
+{%-   if server == pillar['openvpn']['clients_base_config']['default_server'] %}
+{%-     for key, val in server_params.items() %}
+{%-       if key == 'description' %}
+
+; {{ val }}
+{%-       endif %}
+{%-       if key == 'proto' %}
+{%-         if 'udp' in val %}
+{{ key}} udp
+{%-         else %}
+{{ key}} tcp
+{%-         endif %}
+{%-       endif %}
+{%-       if key == 'port' %}
+remote {{ pillar['openvpn']['clients_base_config']['remote'] }} {{ val }}
+{%-       endif %}
+{%-     endfor %}
+{%-   else %}
+{%-     for key, val in server_params.items() %}
+{%-       if key == 'description' %}
+
+; {{ val }}
+{%-       endif %}
+{%-       if key == 'proto' %}
+{%-         if 'udp' in val %}
+;{{ key}} udp
+{%          else %}
+;{{ key}} tcp
+{%-         endif %}
+{%-       endif %}
+{%-       if key == 'port' %}
+;remote {{ pillar['openvpn']['clients_base_config']['remote'] }} {{ val }}
+{%-       endif %}
+{%-     endfor %}
+{%-   endif %}
+{%- endfor %}
+
+resolv-retry {{ pillar['openvpn']['clients_base_config']['resolv_retry'] }}
+nobind
+
+; Downgrade privileges after initialization (non-Windows only)
+user {{ pillar['openvpn']['clients_base_config']['user'] }}
+group {{ pillar['openvpn']['clients_base_config']['group'] }}
+
+persist-key
+persist-tun
+;mute-replay-warnings
+remote-cert-tls {{ pillar['openvpn']['clients_base_config']['remote_cert_tls'] }}
+cipher {{ pillar['openvpn']['clients_base_config']['cipher'] }}
+auth {{ pillar['openvpn']['clients_base_config']['auth'] }}
+{%- if pillar['openvpn']['clients_base_config']['auth_user_pass'] is defined and pillar['openvpn']['clients_base_config']['auth_user_pass'] == True %}
+auth-user-pass
+{%- endif %}
+verb {{ pillar['openvpn']['clients_base_config']['verb'] }}
+key-direction {{ pillar['openvpn']['clients_base_config']['key_direction'] }}
+;mute 20
+
+{%- if pillar['openvpn']['clients_base_config']['compress'] is defined and  pillar['openvpn']['clients_base_config']['compress'] == True %}
+compress
+{%- elif pillar['openvpn']['clients_base_config']['compress']  is defined %}
+compress {{ pillar['openvpn']['clients_base_config']['compress']  }}
+{%- endif %}
+
+; To send all DNS queries through the VPN interface
+; this block need to uncomment for Linux client with resolv-conf
+;script-security 2
+;up /etc/openvpn/update-resolv-conf
+;down /etc/openvpn/update-resolv-conf
+
+
+; To send all DNS queries through the VPN interface
+; this block need to uncomment for Linux client with systemd-resolved
+;script-security 2
+;up /etc/openvpn/update-systemd-resolved
+;down /etc/openvpn/update-systemd-resolved
+;down-pre
+;dhcp-option DOMAIN-ROUTE .
+
+{%- set ca = salt['cmd.run']('cat /opt/EasyRSA/pki/ca.crt') %}
+{%- set cert = salt['cmd.run']('cat /opt/EasyRSA/pki/issued/' + client['name'] + '.crt') %}
+{%- set key = salt['cmd.run']('cat /opt/EasyRSA/pki/private/' + client['name'] + '.key') %}
+{%- set tls_crypt = salt['cmd.run']('cat /opt/EasyRSA/ta.key') %}
+
+<ca>
+{{ ca }}
+</ca>
+<cert>
+{{ cert }}
+</cert>
+<key>
+{{ key }}
+</key>
+<tls-crypt>
+{{ tls_crypt }}
+</tls-crypt>
