@@ -86,7 +86,7 @@ remove flag before:
 {%- for client in pillar["openvpn"]["server_clients"] %}
 {%-   if 'delete' in client and client['delete'] %}
 {%-     if salt['file.file_exists']('/opt/EasyRSA/pki/private/' + client['name'] + '.key') %}
-create_flag:
+create_flag_for_{{ client['name'] }}:
   file.touch:
     - name: /tmp/{{ flag }}
 revoke {{ client['name'] }} certificate:
