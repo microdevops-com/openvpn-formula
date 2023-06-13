@@ -2,6 +2,14 @@
 
 {%- from "openvpn/map.jinja" import mapdata as map with context %}
 
+add timestamp to logfile:
+  file.replace:
+    - name: /usr/lib/systemd/system/openvpn-server@.service
+    - pattern: ' --suppress-timestamps'
+    - repl: ''
+  cmd.run:
+    - name: systemctl daemon-reload
+    - shell: /bin/bash
 
 {% if map.multi_services %}
 # If the OS is using systemd, then each openvpn config has its own service
