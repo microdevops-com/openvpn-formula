@@ -12,10 +12,10 @@ remove {{ client['name'] }} config:
 create config {{ client['name'] }}:
   file.managed:
     - name: /etc/openvpn/client-configs/{{ client['name'] }}@{{ pillar["openvpn"]["clients_base_config"]["remote"] }}.ovpn
-    - source:
+    - source: 
         - salt://openvpn/files/clients_base_config.j2
     - template: jinja
-    - defaults:
+    - defaults: 
         client: {{ client }}
 {%-   endif %}
 {%- endfor %}

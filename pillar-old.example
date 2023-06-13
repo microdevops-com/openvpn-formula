@@ -1,0 +1,352 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
+# See https://openvpn.net/index.php/open-source/documentation/howto.html#examples
+# for configuration details
+# Important: Replace all '-' in names on left side with '_'!
+
+# Defaults can be overwritten, see openvpn/map.jinja for default values
+# openvpn:
+#   lookup:
+#     # This creates a dh file with 4096 bits (which will take a long time).
+#     dh_files: ['4096']
+#     # This creates a dh file with 2048 bits (which should be enough.)
+#     # Default: ['2048', '4096']
+#     # (It creates both variants.)
+#     dh_files: ['2048']
+#
+#     # Set this to true if you want to use the -dsaparam flag in DH param generation.
+#     # See also:
+#     # https://github.com/saltstack-formulas/openvpn-formula/pull/77
+#     # https://security.stackexchange.com/questions/42415/openvpn-dhparam
+#     dsaparam: false
+#
+#     # This will use the OpenVPN repository documented
+#     # at the following URL:
+#     # https://community.openvpn.net/openvpn/wiki/OpenvpnSoftwareRepos
+#     # Only valid for Debian OS family
+#     external_repo_enabled: true
+#
+#     # The version to use for OpenVPN if 'external_repo_enabled' is set to 'true'
+#     # Info here: https://community.openvpn.net/openvpn/wiki/OpenvpnSoftwareRepos
+#     # Valid options: stable (default), testing, release/2.3, release/2.4
+#     external_repo_version: testing
+
+# See also the example used in tests: test/salt/pillar/default.sls
+
+##
+# OpenVPN user and group
+#
+# For historic reasons these are the default values:
+# openvpn:
+#  lookup:
+#    user: nobody
+#    group: nobody  # nogroup on Debian
+
+# You should change them in order to prevent other members of 'nobody'
+# (resp. 'nogroup') to view OpenVPN's config.
+
+openvpn:
+  lookup:
+    user: openvpn
+    group: openvpn
+    # When the user is not 'nobody', it will be managed by this formula.
+    # You can suppress this by: (Default on FreeBSD)
+    manage_user: false
+    # When the group is neither 'nobody' nor 'nogroup',
+    # it will be managed by this formula.
+    # You can suppress this by: (Default on FreeBSD)
+    manage_group: false
+
+    # If you want to control the openvpn services via other tools,
+    # you want to 'disabled' it in your system. Default: running
+    # service_function: disabled
+
+  server:
+    myserver1:
+      ca: /path/to/mycacert.pem
+      cert: /path/to/mycert.pem
+      key: /path/to/mykey.pem
+      server: '10.8.0.0 255.255.255.0'
+      ifconfig_ipv6: 2001:db8::1/64 2001:db8::1
+      ifconfig_ipv6_pool: 2001:db8::2/64
+    myserver2:
+      local: 10.4.0.1
+      port: 1194
+      proto: udp
+      topology: subnet
+      ping: 10
+      ping_restart: 30
+      ping_exit: 60
+      print-timer-rem: ~
+      dev: tun
+      dev_node: ~
+      ca: /path/to/mycacert.pem
+      ca_content: |
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      cert: /path/to/mycert.pem
+      cert_content: |
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      key: /path/to/mykey.pem
+      key_content: |
+        -----BEGIN PRIVATE KEY-----
+        ...
+        -----END PRIVATE KEY-----
+      crl_verify: /path/to/crl.pem
+      crl_verify_content: |
+        -----BEGIN X509 CRL-----
+        ...
+        -----END X509 CRL-----
+      askpass: /path/to/password
+      askpass_content: |
+        p4ssw0rd
+      # https://security.stackexchange.com/questions/94390/whats-the-purpose-of-dh-parameters
+      # tl;dr: The bigger, the better.
+      dh: dh4096.pem
+      # for faster DP params generation use only ['2048'] in openvpn:lookup:dh_files
+      # dh: dh2048.pem
+      server: '10.8.0.0 255.255.255.0'
+      ifconfig_pool_persist: ipp.txt
+      server_bridge: ~
+      push:
+        - "route 192.168.10.0 255.255.255.0"
+      route_nopull: ~
+      route:
+        - "192.168.11.0 255.255.255.0"
+      client_config_dir: clients
+      client_config:
+        client1: |
+          iroute 192.168.10.0 255.255.255.0
+      learn_address: ~
+      client_to_client: false
+      duplicate_cn: false
+      keepalive: '10 120'
+      # `tls-auth` and `tls-crypt` are mutually exclusive
+      # and `tls-crypt` is only valid for OpenVPN 2.4 and above.
+      # If both are set, `tls-crypt` overrides `tls-auth` and
+      # both options require `ta_content` to be set.
+      tls_auth: /path/to/tls.key 0
+      tls_crypt: /path/to/tls.key
+      tls_version_min: 1.2
+      ta_content: |
+        -----BEGIN OpenVPN Static key V1-----
+        ...
+        -----END OpenVPN Static key V1-----
+      # see https://bettercrypto.org/static/applied-crypto-hardening.pdf
+      ciphers:
+        - AES-256-CBC
+      auths:
+        - SHA384
+      # yamllint disable-line rule:line-length
+      tls_cipher: 'DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-CAMELLIA256-SHA:DHE-RSA-AES256-SHA:DHE-RSA-CAMELLIA128-SHA:DHE-RSA-AES128-SHA:CAMELLIA256-SHA:AES256-SHA:CAMELLIA128-SHA:AES128-SHA'
+      comp_lzo: "yes"
+      max_clients: 100
+      user: nobody
+      group: nobody
+      tun_mtu: 1350
+      persist_key: ~
+      persist_tun: ~
+      status: openvpn-status.log
+      log: openvpn.log
+      log_append: openvpn.log
+      # syslog: true
+      # or
+      syslog: openvpn-myserver2
+      verb: 3
+      mute: 20
+      management: 'tunnel 7505'
+      auth_gen_token: true
+      # or, a lifetime in seconds:
+      # auth_gen_token: 604800
+    myserver3:
+      daemon: ~
+      port: 443
+      port_share: '127.0.0.1 4430'
+      ccd_exclusive: ~
+      auths:
+        - SHA384
+      username_as_common_name: ~
+      plugins:
+        - '/usr/lib/openvpn/radiusplugin.so /etc/openvpn/radiusplugin.cnf'
+    mysitetosite1:
+      dev: tun
+      ifconfig: '10.8.0.1 10.8.0.2'
+      secret: /path/to/mysecret.key
+      # or
+      # secret: /path/to/mysecret.key 0
+      # or
+      # secret:  # use this form for paths with spaces
+      #  - /path/to/mysecret.key
+      #  - 0
+      secret_content: |
+        -----BEGIN OpenVPN Static key V1-----
+        ...
+        -----END OpenVPN Static key V1-----
+    mysitetoste2:
+      remote:
+        - 'myremote.mydomain 1194 udp'
+      dev: myinterfacename
+      dev_type: tun
+      ifconfig: '10.8.0.2 10.8.0.1'
+      secret: /path/to/mysecret.key
+      secret_content: |
+        -----BEGIN OpenVPN Static key V1-----
+        ...
+        -----END OpenVPN Static key V1-----
+      _append:
+        - verb 5
+        - mute 25
+  client:
+    myclient1:
+      remote:
+        - 'my-server-1 1194'
+      conf_dir: /path/to  # set this for non-default config directory
+      ca: /path/to/mycacert.pem
+      cert: /path/to/mycert.pem
+      key: /path/to/mykey.pem
+    myclient2:
+      client: ~
+      dev: tun
+      dev_node: ~
+      proto: udp
+      remote:
+        - 'my-server-1 1194'
+        - 'my-server-2 1194'
+      remote_random: ~
+      resolv_retry: infinite
+      nobind: ~
+      user: nobody
+      group: nobody
+      persist_key: ~
+      persist_tun: ~
+      http_proxy_retry: ~
+      http_proxy: 'proxy-server proxy-port'
+      mute_replay_warnings: ~
+      ca: /path/to/mycacert.pem
+      # The following two commented options are examples for Windows
+      # dev_node: ovpn-myclient2
+      # Take care with the quoting for Windows paths with spaces
+      # ca: '"C:\\Program Files\\OpenVPN\\config\\mycacert.pem"'
+      ca_content: |
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      cert: /path/to/mycert.pem
+      cert_content: |
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      key: /path/to/mykey.pem
+      key_content: |
+        -----BEGIN PRIVATE KEY-----
+        ...
+        -----END PRIVATE KEY-----
+      askpass: /path/to/password
+      askpass_content: |
+        p4ssw0rd
+      ns_cert_type: server
+      # tls_auth: /path/to/tls.key 0
+      # or:
+      tls_auth:  # use this form for paths with spaces
+        - /path/to/tls.key
+        - 0
+      ta_content: |
+        -----BEGIN OpenVPN Static key V1-----
+        ...
+        -----END OpenVPN Static key V1-----
+      # see https://bettercrypto.org/static/applied-crypto-hardening.pdf
+      ciphers:
+        - AES-256-CBC
+      auths:
+        - SHA384
+      # yamllint disable-line rule:line-length
+      tls_cipher: 'DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-CAMELLIA256-SHA:DHE-RSA-AES256-SHA:DHE-RSA-CAMELLIA128-SHA:DHE-RSA-AES128-SHA:CAMELLIA256-SHA:AES256-SHA:CAMELLIA128-SHA:AES128-SHA'
+      remote_cert_tls: server
+      comp_lzo: "yes"
+      verb: 3
+      mute: 20
+      up: /usr/local/bin/tunnel_up.sh
+      down: /usr/local/bin/tunnel_down.sh
+      up_delay: true
+      down_pre: true
+      up_restart: true
+      _append:
+        - script-security 2
+        - up 'echo up'
+        - down 'echo down'
+      auth_user_pass: /path/to/auth.txt
+      auth_user_pass_content: |
+        user
+        password
+      auth_nocache: ~
+      fast_io: ~
+      pull: ~
+      tls-client: ~
+      key-direction: 1
+      route-method: exe
+      route-delay: 2
+      fragment: 1300
+      mssfix: 1450
+      keysize: 256
+      sndbuf: 524288
+      rcvbuf: 524288
+      route_nopull: ~
+      route:
+        - "8.8.8.8 255.255.255.255 net_gateway"
+    myclient3:
+      pull: false
+      # from the man page:
+      # This option must be used on a client which is connecting to a
+      # multi-client server. It indicates to OpenVPN that it should accept
+      # options pushed by the server, provided they are part of the legal
+      # set of pushable options
+
+  ifconfig_pool_persist:
+    ipp.txt:
+      somehostname: 192.168.51.2
+      secondhost: 192.168.51.3
+
+  # See GUI config options https://github.com/OpenVPN/openvpn-gui
+  gui:
+    disable_save_passwords: 1
+
+  ##
+  # Use latest OpenVPN packages (default: false)
+  use_latest: false
+
+  # Managing clients which use NetworkManager
+  # (Intentionally does not handle certificate/key distribution!)
+  network_manager:
+    networks:
+      myserver_udp: &myserver_udp_net
+        _vpn_instance: myserver
+        _name: '(Salt) myserver UDP'
+        connection:
+          type: vpn
+          permissions: 'user:a:;'
+          autoconnect: 'false'
+        vpn: &vpn
+          # optional
+          service_type: org.freedesktop.NetworkManager.openvpn
+          # remote defaults to openvpn:client:${vpn_instance}:remote
+          remote: '1.2.3.4'
+          # optional
+          port: 1194
+        ipv4:
+          method: auto
+          never_default: 'true'
+        ipv6:
+          method: ignore
+
+      myserver_tcp: &myserver_tcp_net
+        <<: *myserver_udp_net
+        _vpn_instance: myserver_tcp
+        _name: '(Salt) myserver TCP'
+
+      # Remove config file from NetworkManager
+      myoldserver:
+        remove: true
