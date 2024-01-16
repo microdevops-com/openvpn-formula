@@ -64,8 +64,7 @@ openvpn:
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}\
       ##
-      ## Uncomment the following three terms for authorization by the Linux user's password
-      #verify_client_cert: none
+      ## Uncomment the following two lines to authenticate with the Linux user's password
       #plugins:
       #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
       ##
@@ -101,8 +100,7 @@ openvpn:
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}
       ##
-      ## Uncomment the following three terms for authorization by the Linux user's password
-      #verify_client_cert: none
+      ## Uncomment the following two lines to authenticate with the Linux user's password
       #plugins:
       #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
       ##
@@ -139,8 +137,7 @@ openvpn:
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}
       ##
-      ## Uncomment the following three terms for authorization by the Linux user's password
-      #verify_client_cert: none
+      ## Uncomment the following two lines to authenticate with the Linux user's password
       #plugins:
       #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
       ##
@@ -177,8 +174,7 @@ openvpn:
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}
       ##
-      ## Uncomment the following three terms for authorization by the Linux user's password
-      #verify_client_cert: none
+      ## Uncomment the following two lines to authenticate with the Linux user's password
       #plugins:
       #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
       ##
