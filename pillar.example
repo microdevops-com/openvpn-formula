@@ -62,7 +62,7 @@ openvpn:
       verb: 3
       mute: 20
       duplicate_cn: True
-      explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}\
+      explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}
       ##
       ## Uncomment the following two lines to authenticate with the Linux user's password
       #plugins:
