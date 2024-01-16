@@ -95,14 +95,12 @@ compress {{ pillar['openvpn']['clients_base_config']['compress']  }}
 <ca>
 {{ ca }}
 </ca>
-{%- if pillar['openvpn']['clients_base_config']['auth_user_pass'] is not defined or not pillar['openvpn']['clients_base_config']['auth_user_pass'] |default(false) %}
 <cert>
 {{ cert }}
 </cert>
 <key>
 {{ key }}
 </key>
-{%- endif %}
 <tls-crypt>
 {{ tls_crypt }}
 </tls-crypt>
