@@ -64,7 +64,8 @@ openvpn:
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}
       ##
-      ## Uncomment the following two lines to authenticate with the Linux user's password
+      ## Uncomment the following tree lines to authenticate with the Linux user's password
+      #username_as_common_name: True
       #plugins:
       #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
       ##
@@ -100,7 +101,8 @@ openvpn:
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}
       ##
-      ## Uncomment the following two lines to authenticate with the Linux user's password
+      ## Uncomment the following tree lines to authenticate with the Linux user's password
+      #username_as_common_name: True
       #plugins:
       #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
       ##
@@ -137,7 +139,8 @@ openvpn:
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}
       ##
-      ## Uncomment the following two lines to authenticate with the Linux user's password
+      ## Uncomment the following tree lines to authenticate with the Linux user's password
+      #username_as_common_name: True
       #plugins:
       #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
       ##
@@ -174,7 +177,8 @@ openvpn:
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}
       ##
-      ## Uncomment the following two lines to authenticate with the Linux user's password
+      ## Uncomment the following tree lines to authenticate with the Linux user's password
+      #username_as_common_name: True
       #plugins:
       #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
       ##
