@@ -63,12 +63,12 @@ openvpn:
       mute: 20
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}\
-      #
-      # uncomment the next three lines for password authentication
+      ##
+      ## Uncomment the following three terms for authorization by the Linux user's password
       #verify_client_cert: none
       #plugins:
       #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
-      #
+      ##
 {%- set server = "server-tcp443-default-gw" %}
 {%- set subnet = "10.8.2.0 255.255.255.0" %}
 {%- set proto = "tcp4" %}
@@ -100,6 +100,12 @@ openvpn:
       mute: 20
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}
+      ##
+      ## Uncomment the following three terms for authorization by the Linux user's password
+      #verify_client_cert: none
+      #plugins:
+      #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
+      ##
 {%- set server = "server-udp1194-no-default-gw" %}
 {%- set subnet = "10.8.3.0 255.255.255.0" %}
 {%- set proto = "udp4" %}
@@ -132,12 +138,12 @@ openvpn:
       mute: 20
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}
-      #
-      # uncomment the next three lines for password authentication
+      ##
+      ## Uncomment the following three terms for authorization by the Linux user's password
       #verify_client_cert: none
       #plugins:
       #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
-      #
+      ##
 {%- set server = "server-tcp1194-no-default-gw" %}
 {%- set subnet = "10.8.4.0 255.255.255.0" %}
 {%- set proto = "tcp4" %}
@@ -170,12 +176,12 @@ openvpn:
       mute: 20
       duplicate_cn: True
       explicit_exit_notify: {% if proto == 'udp4' %}1{% else %}0{% endif %}
-      #
-      # uncomment the next three lines for password authentication
+      ##
+      ## Uncomment the following three terms for authorization by the Linux user's password
       #verify_client_cert: none
       #plugins:
       #  - /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so login
-      #
+      ##
   use_latest: false
   easyrsa:
     tgz_link: https://github.com/OpenVPN/easy-rsa/releases/download/v3.0.8/EasyRSA-3.0.8.tgz
@@ -201,15 +207,15 @@ openvpn:
     auth: SHA384
     verb: 3
     key_direction: 1
-    #
-    # uncomment the next line for password authentication
+    ##
+    ## uncomment the next line for password authentication
     #auth_user_pass: true
-    #
+    ##
   server_clients:
     - name: User1
     - name: User2
       delete: true
     - name: User3
-    # If authorization by password is enabled, it is enough to create one user for everyone, 
-    # for example
+    ## If authorization by password is enabled, it is enough to create one user for everyone 
+    ## for example
     #- default
