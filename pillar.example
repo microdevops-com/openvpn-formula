@@ -214,4 +214,4 @@ openvpn:
     - name: User3
     ## If authorization by password is enabled, it is enough to create one user for everyone 
     ## for example
-    #- default
+    - default
