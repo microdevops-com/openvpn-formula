@@ -148,7 +148,9 @@ push "{{ push }}"
     {%- for domain in pillar["openvpn"]["domains_for_routes"] %}
     {%- set resolved_ips = salt['dig.A'](domain) %}
       {%- for ip in resolved_ips %}
-        {%- do domains_based_routes.append(ip) %}
+        {%- if not ip.startswith('127.0.0.') %}
+          {%- do domains_based_routes.append(ip) %}
+        {%- endif %}
       {%- endfor %}
     {%- endfor %}
   {%- set all_routes = all_routes + domains_based_routes %}
