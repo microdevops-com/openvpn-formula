@@ -29,7 +29,7 @@ openvpn_config_{{ client_name }}_client_config:
     - name: {{ client_config_dir }}/{{ client_name }}
     - user: root
     - group: root
-    - mode: 640
+    - mode: 644
     - makedirs: True
     - contents: {{ client["config"] | tojson }}
     {% endif %}
