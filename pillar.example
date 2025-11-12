@@ -58,6 +58,8 @@ openvpn:
       log_append: /var/log/openvpn/openvpn-{{ server }}.log
       push:
         - "redirect-gateway def1 bypass-dhcp"
+      # Disable pushing global routes defined in openvpn:routes and openvpn:domains_for_routes
+      push_global_routes: false
       keepalive: '10 120'
       verb: 3
       mute: 20
@@ -96,6 +98,8 @@ openvpn:
       log_append: /var/log/openvpn/openvpn-{{ server }}.log
       push:
         - "redirect-gateway def1 bypass-dhcp"
+      # Disable pushing global routes defined in openvpn:routes and openvpn:domains_for_routes
+      push_global_routes: false
       keepalive: '10 120'
       verb: 3
       mute: 20

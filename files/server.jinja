@@ -137,7 +137,8 @@ push "{{ push }}"
 {%-   endif -%}
 {%- endmacro -%}
 
-{%- if pillar["openvpn"]["routes"] is defined or pillar["openvpn"]["domains_for_routes"] is defined %}
+{%- if (pillar["openvpn"]["routes"] is defined or pillar["openvpn"]["domains_for_routes"] is defined) and 
+       (config.push_global_routes is not defined or config.push_global_routes) %}
 {%- set all_routes = [] %}
   {%- if pillar["openvpn"]["routes"] is defined %}
   {%- set all_routes = all_routes + pillar["openvpn"]["routes"] %}
