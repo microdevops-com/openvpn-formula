@@ -215,6 +215,14 @@ management {{ config.management }}
 auth-user-pass-verify {{ config.auth_user_pass_verify }}
 {%- endif %}
 
+{%- if config.client_connect is defined %}
+client-connect {{ config.client_connect }}
+{%- endif %}
+
+{%- if config.client_disconnect is defined %}
+client-disconnect {{ config.client_disconnect }}
+{%- endif %}
+
 {#- `false is number` and `true is number` both also return true... #}
 {%- if config.auth_gen_token is defined
         and (config.auth_gen_token|int is sameas (config.auth_gen_token)
