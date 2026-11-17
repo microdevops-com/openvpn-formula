@@ -8,6 +8,7 @@ include:
   - openvpn.dhparams
   - openvpn.certificates
   - openvpn.auth_user_pass_verify_sh
+  - openvpn.files_managed
   - openvpn.service
   - openvpn.config
   - openvpn.clients_configs

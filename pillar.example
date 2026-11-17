@@ -31,6 +31,8 @@ openvpn:
     manage_user: false
     manage_group: false
     external_repo_enabled: true
+  files:
+    # as in https://github.com/microdevops-com/microdevops-formula/tree/master/_include/file_manager
   server:
 {%- set server = "server-udp443-default-gw" %}
 {%- set subnet = "10.8.1.0 255.255.255.0" %}
